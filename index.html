@@ -37,28 +37,13 @@
       margin-bottom: 10px;
     }
 
-    #ranking-container {
-      background-color: #fff;
-      padding: 10px;
-      margin-top: 20px;
-      border-radius: 5px;
-    }
-
-    #ranking-list {
-      list-style: none;
-      padding: 0;
-    }
-
-    .ranking-item {
+    .button-container {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 5px;
-      border-bottom: 1px solid #ddd;
+      justify-content: space-around;
+      margin-top: 10px;
     }
 
-    .button-container a {
-      display: inline-block;
+    .button-container button {
       padding: 10px;
       font-size: 14px;
       cursor: pointer;
@@ -67,7 +52,6 @@
       outline: none;
       width: 50px; /* ボタンの幅を適切なものに変更 */
       height: 50px; /* ボタンの高さを適切なものに変更 */
-      text-decoration: none;
     }
   </style>
 </head>
@@ -80,81 +64,59 @@
     <label for="buy-input">購入数量:</label>
     <input type="number" id="buy-input" min="1" value="1">
     <div class="button-container">
-      <a href="#" id="buy-button" onclick="buyStock()">買う</a>
+      <button id="buy-button" onclick="buyStock()">買う</button>
 
       <label for="sell-input">売却数量:</label>
       <input type="number" id="sell-input" min="1" value="1">
-      <a href="#" id="sell-button" onclick="sellStock()">売る</a>
-    </div>
-
-    <!-- ランキングコンテナ -->
-    <div id="ranking-container">
-      <h2>ランキング</h2>
-      <ul id="ranking-list"></ul>
+      <button id="sell-button" onclick="sellStock()">売る</button>
     </div>
   </div>
 
   <script>
-    // ダミーのランキングデータ（仮定）
-    const dummyRankingData = [
-      { name: 'プレイヤー1', score: 1200 },
-      { name: 'プレイヤー2', score: 1050 },
-      { name: 'プレイヤー3', score: 980 },
-      // 他のプレイヤーのデータ
-    ];
-
-    function fetchRanking() {
-      // サーバーからランキングデータを取得する際の実装
-      // この例ではダミーデータを使用
-      return dummyRankingData;
-    }
-
-    function displayRanking() {
-      const rankingList = document.getElementById('ranking-list');
-      const rankingData = fetchRanking();
-
-      rankingList.innerHTML = '';
-
-      rankingData.forEach((player, index) => {
-        const listItem = document.createElement('li');
-        listItem.classList.add('ranking-item');
-        listItem.innerHTML = `<span>${index + 1}. ${player.name}</span><span>スコア: ${player.score}</span>`;
-        rankingList.appendChild(listItem);
-      });
-    }
+    let balance = 10000;
+    let stockPrice = 50;
+    let stocksOwned = 0;
 
     function buyStock() {
-      // 購入処理の実装
-      // ...
+      const quantity = parseInt(document.getElementById('buy-input').value, 10);
+      const cost = quantity * stockPrice;
+
+      if (cost > balance) {
+        alert('所持金が不足しています！');
+        return;
+      }
+
+      balance -= cost;
+      stocksOwned += quantity;
       updateUI();
     }
 
     function sellStock() {
-      // 売却処理の実装
-      // ...
+      const quantity = parseInt(document.getElementById('sell-input').value, 10);
+
+      if (quantity > stocksOwned) {
+        alert('保有している株式より多く売却できません！');
+        return;
+      }
+
+      const revenue = quantity * stockPrice;
+      balance += revenue;
+      stocksOwned -= quantity;
       updateUI();
     }
 
     function updateUI() {
-      // UIの更新処理
-      // ...
-      // ランキングも更新
-      displayRanking();
+      document.getElementById('balance').innerText = `所持金: $${balance}`;
+      document.getElementById('stock-info').innerText = `株価: $${stockPrice.toFixed(2)} | 保有株式: ${stocksOwned}`;
     }
 
     function simulateStockPriceChange() {
-      // 株価変動のシミュレーション
-      // ...
+      const maxChange = 5;
+      const randomChange = Math.random() * maxChange * 2 - maxChange;
+      stockPrice = Math.max(1, stockPrice + randomChange);
       updateUI();
     }
 
-    // 初回表示
-    displayRanking();
-
-    // 定期的にランキングを更新（例: 10秒ごとに更新）
-    setInterval(displayRanking, 60000);
-
-    // 株価変動のシミュレーション（例: 5秒ごとに変動）
     setInterval(simulateStockPriceChange, 5000);
   </script>
 </body>
