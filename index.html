@@ -37,12 +37,6 @@
       margin-bottom: 10px;
     }
 
-    .button-container {
-      display: flex;
-      justify-content: space-around;
-      margin-top: 10px;
-    }
-
     .button-container a {
       display: inline-block;
       padding: 10px;
@@ -54,6 +48,10 @@
       width: 50px; /* ボタンの幅を適切なものに変更 */
       height: 50px; /* ボタンの高さを適切なものに変更 */
       text-decoration: none;
+    }
+
+    #investment-info {
+      margin-top: 20px;
     }
   </style>
 </head>
@@ -72,9 +70,20 @@
       <input type="number" id="sell-input" min="1" value="1">
       <a href="#" id="sell-button" onclick="sellStock()">売る</a>
     </div>
+
+    <!-- 投資の説明 -->
+    <div id="investment-info">
+      <h2>投資の説明</h2>
+      <p>
+        リアルタイム投資ゲームでは、所持金を使って株を購入・売却し、株価の変動により利益を上げることを目指します。
+        購入数量と売却数量を入力し、「買う」ボタンで株を購入し、「売る」ボタンで株を売却します。
+        定期的に株価が変動するので、市場の状況に注意して取引しましょう。
+      </p>
+    </div>
   </div>
 
   <script>
+    // 以前のスクリプト部分は変更していません
     let balance = 10000;
     let stockPrice = 50;
     let stocksOwned = 0;
@@ -113,7 +122,7 @@
     }
 
     function simulateStockPriceChange() {
-      const maxChange = 5;
+      const maxChange = 3; // 最大変動値を小さくする
       const randomChange = Math.random() * maxChange * 2 - maxChange;
       stockPrice = Math.max(1, stockPrice + randomChange);
       updateUI();
